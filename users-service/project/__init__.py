@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -24,5 +24,3 @@ def create_app():
     app.register_blueprint(users_blueprint)
 
     return app
-    
-    

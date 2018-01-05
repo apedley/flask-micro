@@ -4,7 +4,6 @@ import datetime
 from project import db
 
 
-
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -17,4 +16,3 @@ class User(db.Model):
         self.username = username
         self.email = email
         self.created_at = datetime.datetime.utcnow()
-        

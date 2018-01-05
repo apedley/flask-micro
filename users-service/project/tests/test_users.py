@@ -7,11 +7,13 @@ from project import db
 
 from project.api.models import User
 
+
 def add_user(username, email):
     user = User(username=username, email=email)
     db.session.add(user)
     db.session.commit()
     return user
+
 
 class TestUserService(BaseTestCase):
     """Tests for the Users Service."""
@@ -23,7 +25,7 @@ class TestUserService(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('pong!', data['message'])
         self.assertIn('success', data['status'])
-    
+
     def test_add_user(self):
         with self.client:
             response = self.client.post(
@@ -38,7 +40,7 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertIn('michael@realpython.com was added!', data['message'])
             self.assertIn('success', data['status'])
-                
+
     def test_add_user_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
         with self.client:
@@ -53,7 +55,7 @@ class TestUserService(BaseTestCase):
             self.assertIn('fail', data['status'])
 
     def test_add_user_invalid_json_keys(self):
-        """Ensure error is thrown if the JSON object does not have a username key."""
+        """Throw error if the JSON object does not have a username key."""
         with self.client:
             response = self.client.post(
                 '/users',
@@ -89,7 +91,7 @@ class TestUserService(BaseTestCase):
             self.assertIn(
                 'Sorry. That email already exists.', data['message'])
             self.assertIn('fail', data['status'])
-    
+
     def test_single_user(self):
         """Ensure get single user behaves correctly."""
         user = add_user('michael', 'michael@realpython.com')
@@ -119,6 +121,7 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
+
     def test_all_users(self):
         """Ensure get all users behaves correctly."""
         add_user('michael', 'michael@realpython.com')
@@ -137,16 +140,16 @@ class TestUserService(BaseTestCase):
             self.assertIn(
                 'fletcher@realpython.com', data['data']['users'][1]['email'])
             self.assertIn('success', data['status'])
-    
+
     def test_main_no_users(self):
-        """Ensure the main route behaves correctly when no users have been added to the database."""
+        """Ensure the main route behaves correctly with no users in db."""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'<h1>All Users</h1>', response.data)
         self.assertIn(b'<p>No users!</p>', response.data)
-    
+
     def test_main_with_users(self):
-        """Ensure the main route behaves correctly when users have been added to the database."""
+        """Ensure the main route behaves correctly with users in db."""
         add_user('michael', 'michael@realpython.com')
         add_user('fletcher', 'fletcher@realpython.com')
         response = self.client.get('/')
@@ -155,7 +158,7 @@ class TestUserService(BaseTestCase):
         self.assertNotIn(b'<p>No users!</p>', response.data)
         self.assertIn(b'<strong>michael</strong>', response.data)
         self.assertIn(b'<strong>fletcher</strong>', response.data)
-        
+
     def test_main_add_user(self):
         """Ensure a new user can be added to the database."""
         with self.client:

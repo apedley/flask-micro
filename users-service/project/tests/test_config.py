@@ -7,6 +7,7 @@ from project import create_app
 
 app = create_app()
 
+
 class TestDevelopmentConfig(TestCase):
     def create_app(self):
         app.config.from_object('project.config.DevelopmentConfig')
@@ -20,6 +21,7 @@ class TestDevelopmentConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] ==
             'postgres://postgres:postgres@users-db:5432/users_dev'
         )
+
 
 class TestTestingConfig(TestCase):
     def create_app(self):
@@ -50,4 +52,3 @@ class TestProductionConfig(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
