@@ -4,7 +4,7 @@ services:
   users-db:
     container_name: users-db
     build:
-      context: ./users-service/project/db
+      context: ./services/users/project/db
     ports:
       - 5435:5432 # expose ports - HOST:CONTAINER
     environment:
@@ -16,9 +16,9 @@ services:
   users-service:
     container_name: users-service
     build:
-      context: ./users-service
+      context: ./services/users
     volumes:
-      - './users-service:/usr/src/app'
+      - './services/users:/usr/src/app'
     ports:
       - 5001:5000 # expose ports - HOST:CONTAINER
     environment:
@@ -30,14 +30,32 @@ services:
         condition: service_healthy
     links:
       - users-db
-  nginx:
-    container_name: nginx
-    build: ./nginx/
+  nginx-server:
+    container_name: nginx-server
+    build: ./services/nginx
     restart: always
     ports:
       - 80:80
     depends_on:
       users-service:
         condition: service_started
+      client:
+        condition: service_started
     links:
       - users-service
+      - client
+  client:
+    container_name: client
+    build:
+      context: ./services/client
+    volumes:
+      - './services/client:/usr/src/app'
+    ports:
+      - '3007:3000'
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_USERS_SERVICE_URL=http://localhost:5001
+    depends_on:
+      - users-service
+        
+      

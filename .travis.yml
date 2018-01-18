@@ -14,9 +14,11 @@ before_install:
 
 
 before_script:
+  - export REACT_APP_USERS_SERVICE_URL=http://127.0.0.1
   - docker-compose up --build -d
   - docker-compose run users-service python manage.py recreate_db
   - docker-compose run users-service python manage.py seed_db
+
 
 script:
   - docker-compose run users-service python manage.py test
