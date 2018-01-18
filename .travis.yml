@@ -26,3 +26,5 @@ script:
 
 after_script:
   - docker-compose down
+
+group: deprecated-2017Q4  
